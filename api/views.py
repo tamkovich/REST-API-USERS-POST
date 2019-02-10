@@ -38,6 +38,7 @@ class PostCreateAPIView(CreateAPIView):
 class PostListAPIView(ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class PostDetailAPIView(RetrieveAPIView):

@@ -1,5 +1,7 @@
 import requests
 
+from requests_jwt import JWTAuth
+
 import parse
 
 CONFIG_PATH = 'autobotconfig.yaml'
@@ -15,15 +17,34 @@ class AutoBot:
         self.max_likes_per_user = config_data['max_likes_per_user']
         self.api_endpoint = api_endpoint
 
+        self.signup_url = self.api_endpoint.format(action='user/register/')
+        self.auth_url = self.api_endpoint.format(action='user/token/')
+        self.verify_url = self.api_endpoint.format(action='user/token-verify/')
+        self.create_post_url = self.api_endpoint.format(action='post/create/')
+
     def run(self):
-        url = self.api_endpoint.format(action='user/register/')
+
         for i in range(self.number_of_users):
             data = {
                 'username': f'AutoBot{i}',
                 'password': 'autobotpasswordcommon',
                 'email': '',
             }
-            r = requests.post(url, data=data)
+            r = requests.post(self.signup_url, data=data)
+            print(r.status_code, r.json())
+            r = requests.post(self.auth_url, data=data)
+            print(r.status_code, r.json())
+            access_token = r.json()['token']
+            r = requests.post(self.verify_url, data={'token': access_token})
+            print(r.status_code, r.json())
+            data = {"content": "some post test", "title": "OpaTest"}
+            r = requests.post(
+                self.create_post_url,
+                data=data,
+                headers={
+                    'Authorization': 'JWT {}'.format(access_token)
+                }
+            )
             print(r.status_code, r.json())
 
     #
@@ -38,4 +59,3 @@ class AutoBot:
 if __name__ == '__main__':
     bot = AutoBot()
     bot.run()
-
