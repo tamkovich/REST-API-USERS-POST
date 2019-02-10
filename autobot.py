@@ -1,4 +1,5 @@
 import requests
+import random
 
 from requests_jwt import JWTAuth
 
@@ -31,21 +32,18 @@ class AutoBot:
                 'email': '',
             }
             r = requests.post(self.signup_url, data=data)
-            print(r.status_code, r.json())
+            # print(r.status_code, r.json())
             r = requests.post(self.auth_url, data=data)
-            print(r.status_code, r.json())
+            # print(r.status_code, r.json())
             access_token = r.json()['token']
-            r = requests.post(self.verify_url, data={'token': access_token})
-            print(r.status_code, r.json())
-            data = {"content": "some post test", "title": "OpaTest"}
-            r = requests.post(
-                self.create_post_url,
-                data=data,
-                headers={
-                    'Authorization': 'JWT {}'.format(access_token)
-                }
-            )
-            print(r.status_code, r.json())
+            headers = {'Authorization': 'JWT {}'.format(access_token)}
+            for j in range(random.randint(0, self.max_posts_per_user)):
+                r = requests.post(
+                    self.create_post_url,
+                    data={"content": f'Content{j} via AutoBot{i}', "title": "Wow Test Post"},
+                    headers=headers
+                )
+                print(r.status_code, r.json())
 
     #
     # End Public Methods
