@@ -3,16 +3,19 @@ from rest_framework.generics import (
     CreateAPIView,
     RetrieveAPIView,
 )
-from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from django.contrib.auth import get_user_model
+from django.http import Http404
 
 from api.models import Post
 from api.serializers import (
+    # post
     PostListSerializer,
     PostCreateSerializer,
     PostDetailSerializer,
+    # user
+    UserCreateSerializer,
 )
 
 
@@ -58,3 +61,16 @@ class PostMarkAPIView(APIView):
             raise Http404
         serializer = PostDetailSerializer(post)
         return Response(serializer.data)
+
+#
+# User
+#
+
+
+User = get_user_model()
+
+
+class UserCreateAPIView(CreateAPIView):
+    serializer_class = UserCreateSerializer
+    queryset = User.objects.all()
+
