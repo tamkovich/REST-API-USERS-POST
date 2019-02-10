@@ -52,7 +52,7 @@ class PostMarkAPIView(APIView):
             post.likes += 1
             post.save()
         elif mark == 'dislike':
-            post.dislike += 1
+            post.dislikes += 1
             post.save()
         else:
             raise Http404
