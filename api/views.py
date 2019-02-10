@@ -38,6 +38,7 @@ class PostCreateAPIView(CreateAPIView):
 class PostListAPIView(ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class PostDetailAPIView(RetrieveAPIView):
@@ -73,6 +74,34 @@ class PostMarkAPIView(APIView):
         serializer = PostDetailSerializer(post)
         return Response(serializer.data)
 
+
+class PostRandomMarkAPIView(APIView):
+
+    @staticmethod
+    def _get_object(id):
+        try:
+            return Post.objects.get(pk=id)
+        except Post.DoesNotExist:
+            raise Http404
+
+    def get(self, request, mark, format=None):
+        post = Post.objects.random()
+        serializer = PostDetailSerializer(post)
+        return Response(serializer.data)
+
+    def put(self, request, mark, format=None):
+        post = Post.objects.random()
+        if mark == 'like':
+            post.likes += 1
+            post.save()
+        elif mark == 'dislike':
+            post.dislikes += 1
+            post.save()
+        else:
+            raise Http404
+        serializer = PostDetailSerializer(post)
+        return Response(serializer.data)
+
 #
 # User
 #
@@ -97,4 +126,3 @@ class UserLoginAPIView(APIView):
             new_data = serializer.data
             return Response(new_data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
