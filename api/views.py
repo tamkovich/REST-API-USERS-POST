@@ -74,6 +74,34 @@ class PostMarkAPIView(APIView):
         serializer = PostDetailSerializer(post)
         return Response(serializer.data)
 
+
+class PostRandomMarkAPIView(APIView):
+
+    @staticmethod
+    def _get_object(id):
+        try:
+            return Post.objects.get(pk=id)
+        except Post.DoesNotExist:
+            raise Http404
+
+    def get(self, request, mark, format=None):
+        post = Post.objects.random()
+        serializer = PostDetailSerializer(post)
+        return Response(serializer.data)
+
+    def put(self, request, mark, format=None):
+        post = Post.objects.random()
+        if mark == 'like':
+            post.likes += 1
+            post.save()
+        elif mark == 'dislike':
+            post.dislikes += 1
+            post.save()
+        else:
+            raise Http404
+        serializer = PostDetailSerializer(post)
+        return Response(serializer.data)
+
 #
 # User
 #

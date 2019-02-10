@@ -6,6 +6,7 @@ from api.views import (
     PostCreateAPIView,
     PostDetailAPIView,
     PostMarkAPIView,
+    PostRandomMarkAPIView,
     # user
     UserCreateAPIView,
     UserLoginAPIView,
@@ -19,6 +20,7 @@ urlpatterns = [
     # post
     path('post/list/', PostListAPIView.as_view(), name='post-list'),
     path('post/create/', PostCreateAPIView.as_view(), name='post-create'),
+    re_path('post/random/(?P<mark>[\w-]+)/$', PostRandomMarkAPIView.as_view(), name='post-random-mark'),
     re_path('post/(?P<id>[0-9]+)/$', PostDetailAPIView.as_view(), name='post-detail'),
     re_path('post/(?P<id>[0-9]+)/(?P<mark>[\w-]+)/$', PostMarkAPIView.as_view(), name='post-mark'),
 
