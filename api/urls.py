@@ -1,8 +1,9 @@
-from django.urls import path
+from django.urls import path, re_path
 
 from api.views import (
     PostListAPIView,
-    PostCreateAPIView
+    PostCreateAPIView,
+    PostDetailAPIView,
 )
 
 app_name = 'api'
@@ -10,4 +11,5 @@ app_name = 'api'
 urlpatterns = [
     path('post/list/', PostListAPIView.as_view(), name='post-list'),
     path('post/create/', PostCreateAPIView.as_view(), name='post-create'),
+    re_path('post/(?P<id>[0-9]+)/$', PostDetailAPIView.as_view(), name='post-detail'),
 ]

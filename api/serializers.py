@@ -22,4 +22,20 @@ class PostListSerializer(ModelSerializer):
             'content',
             'created_at',
             'creator',
+            'likes',
+            'dislikes',
+        ]
+
+
+class PostDetailSerializer(ModelSerializer):
+    class Meta:
+        model = Post
+        fields = [
+            'id',
+            'title',
+            'content',
+            'created_at',
+            'creator',
+            'likes',
+            'dislikes',
         ]
